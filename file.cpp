@@ -8,6 +8,7 @@
 #include <cctype>
 #include "errors.h"
 #include "boilerplates.h"
+#include "functions.h"
 
 using std::cin;
 using std::cout;
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
     else if (argc == 2)
     {
         std::string command = argv[1];
-        if (command == "SHOW" || command == "show")
+        if (Functions::compareCaseInsensitive(command, "show"))
         {
             ShowCommand(argc, argv);
         }
@@ -102,23 +103,23 @@ int main(int argc, char *argv[])
     {
         std::string command = argv[1];
 
-        if (command == "delete" || command == "DELETE")
+        if (Functions::compareCaseInsensitive(command, "delete"))
         {
             DeleteCommand(argc, argv);
         }
-        else if (command == "create" || command == "CREATE")
+        else if (Functions::compareCaseInsensitive(command, "create"))
         {
             CreateCommand(argc, argv);
         }
-        else if (command == "OPEN" || command == "open")
+        else if (Functions::compareCaseInsensitive(command, "open"))
         {
             OpenCommand(argc, argv);
         }
-        else if (command == "copy" || command == "COPY")
+        else if (Functions::compareCaseInsensitive(command, "copy"))
         {
             CopyToClipboard(argc, argv);
         }
-        else if (command == "insert" || command == "INSERT")
+        else if (Functions::compareCaseInsensitive(command, "insert"))
         {
             InsertCommand(argc, argv);
         }
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
         {
             RenameCommand(argc, argv);
         }
-        else if (command == "size" || command == "SIZE")
+        else if (Functions::compareCaseInsensitive(command, "size"))
         {
             SizeCommand(argc, argv);
         }
