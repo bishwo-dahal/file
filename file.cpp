@@ -5,24 +5,66 @@
 #include <iomanip>
 #include <string.h>
 #include <conio.h>
-#include "boilerPlates.h"
-using namespace std;
+#include <cctype>
+#include "errors.h"
+#include "boilerplates.h"
 
-std::string getCurrentTime()
-{
-    std::string date = "";
-    time_t now = time(0);
-    char *currentTime = ctime(&now);
-
-    date = currentTime;
-    return date;
-}
+using std::cin;
+using std::cout;
+using std::string;
+// just for simplicity
 
 std::string filePrefix(int num, std::string filename)
 {
     std::string out = "";
-    out = to_string(num) + "). " + filename + " ";
+    out = std::to_string(num) + "). \"" + filename + "\" ";
     return out;
+}
+
+void printTable(std::string firstParam, std::string secondParam, int width = 15)
+{
+    const char separator = ' ';
+    // const int width = 15;
+    std::cout << std::left << std::setw(width) << std::setfill(separator) << firstParam;
+    std::cout << std::left << std::setw(width) << std::setfill(separator) << secondParam << std::endl;
+}
+void printTable(std::string firstParam, double secondParam, int width = 15)
+{
+    const char separator = ' ';
+    // const int width = 15;
+    std::cout << std::left << std::setw(width) << std::setfill(separator) << firstParam;
+    std::cout << std::left << std::setw(width) << std::setfill(separator) << secondParam << std::endl;
+}
+std::string getBoilerPlate(std::string extName)
+{
+    BoilerPlates plates;
+    extName = Functions::toLowerCase(extName);
+    if (extName == "js")
+    {
+        std::cout << "There are couple of choices: \n";
+        printTable("1. ", "For simple JS File");
+        printTable("2. ", "For Node JS File");
+        std::cout << "Enter Your Choice (Default is 1) ";
+        char ans = std::getchar();
+        if (ans == '2')
+        {
+            extName = "node" + extName;
+        }
+    }
+
+    return plates.getBoilerPlate(extName);
+}
+std::string getExtension(std::string fileName)
+{
+    std::string extName = "";
+    for (int fLength = 0; fLength < fileName.length(); fLength++)
+    {
+        if (fileName.at(fLength) == '.')
+        {
+            extName = fileName.substr(fLength + 1, fileName.length() - fLength);
+        }
+    }
+    return extName;
 }
 
 void DeleteCommand(int argc, char *argv[]);
@@ -30,14 +72,31 @@ void CreateCommand(int argc, char *argv[]);
 void OpenCommand(int argc, char *argv[]);
 void CopyToClipboard(int argc, char *argv[]);
 void InsertCommand(int argc, char *argv[]);
+void ShowCommand(int argc, char *argv[]);
+void RenameCommand(int argc, char *argv[]);
+void SizeCommand(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
 
-    if (argc <= 2)
+    if (argc < 2)
     {
         std::cout.width(50);
         std::cout << "\t\tPLEASE PROVIDE SUFFICIENT FILE NAMES" << std::endl;
+    }
+    else if (argc == 2)
+    {
+        std::string command = argv[1];
+        if (command == "SHOW" || command == "show")
+        {
+            ShowCommand(argc, argv);
+        }
+        else
+        {
+            std::cout.width(50);
+            std::cout << "\t\tCOMMAND NOT FOUND OR LESS APPROPRIATE COMMANDS \n\n"
+                      << std::endl;
+        }
     }
     else
     {
@@ -62,6 +121,14 @@ int main(int argc, char *argv[])
         else if (command == "insert" || command == "INSERT")
         {
             InsertCommand(argc, argv);
+        }
+        else if (Functions::compareCaseInsensitive(command, "rename"))
+        {
+            RenameCommand(argc, argv);
+        }
+        else if (command == "size" || command == "SIZE")
+        {
+            SizeCommand(argc, argv);
         }
         else
         {
@@ -111,13 +178,16 @@ void CreateCommand(int argc, char *argv[])
         }
         else
         {
-            openFile << getCurrentTime() << std::endl;
+            std::string fileName = argv[a];
+            std::string extensionName = getExtension(fileName);
+
+            openFile << getBoilerPlate(extensionName) << std::endl;
+
             std::cout << filePrefix(a - 1, argv[a]) << "  created Successfully\n";
             openFile.close();
         }
     }
 }
-
 void OpenCommand(int argc, char *argv[])
 {
     for (size_t a = 2; a < argc; a++)
@@ -168,7 +238,6 @@ void CopyToClipboard(int argc, char *argv[])
 
     std::cout << wholeContent;
 }
-
 void InsertCommand(int argc, char *argv[])
 {
     for (int a = 2; a < argc; a++)
@@ -216,4 +285,94 @@ void InsertCommand(int argc, char *argv[])
         }
         openFile.close();
     }
+}
+void RenameCommand(int argc, char *argv[])
+{
+    if (argc % 2 != 0)
+    {
+        std::cout << "\n\tNOO! Insufficient Files Name \n\n";
+        return;
+    }
+    int ctr = 1;
+
+    for (int a = 2; a < argc; a++)
+    {
+        int isRenamed = rename(argv[a], argv[a + 1]);
+        if (isRenamed != 0)
+        {
+            std::cout << "" << filePrefix(ctr, argv[a]) << " file Could not be renamed to " << argv[a + 1];
+        }
+        else
+        {
+            std::cout << filePrefix(ctr, argv[a]) << " file  renamed to " << argv[a + 1];
+        }
+        std::cout << std::endl;
+        a++;
+        ctr++;
+        // This is for adding one which becomes +2 as whole
+        // if given file replace a.txt b.txt  // skips b.txt and jumps to another
+    }
+}
+
+void SizeCommand(int argc, char *argv[])
+{
+    double totalSize = 0;
+    std::string sizeType = "-b";
+    for (int a = 2; a < argc; a++)
+    {
+        std::string argument = argv[a];
+        if (argument == "-b" || argument == "-B" || argument == "-mb" || argument == "-MB" || argument == "-kb" || argument == "-KB" || argument == "-gb" || argument == "-Gb")
+        {
+            sizeType = argument;
+            break;
+        }
+    }
+    int ctr = 1;
+    // std::cout << "Filenames" << std::setw(8) << std::setfill(' ') << "Sizes" << std::endl;
+    printTable(std::string("Filenames"), std::string("Size"));
+    for (int a = 2; a < argc; a++)
+    {
+        if (argv[a] == sizeType)
+            continue;
+
+        std::fstream findSize(argv[a], std::ios_base::binary | std::ios_base::in);
+        if (!findSize)
+        {
+            Errors err;
+            err.fileNotOpened(argv[a], ctr);
+        }
+        else
+        {
+            findSize.seekg(0, std::ios_base::end);
+            double fileSize = findSize.tellg();
+
+            if (sizeType == "-kb" || sizeType == "-KB")
+            {
+                fileSize /= 1024.0;
+            }
+            else if (sizeType == "-mb" || sizeType == "-MB")
+            {
+                fileSize /= 1024.0;
+                fileSize /= 1024.0;
+            }
+            else if (sizeType == "-gb" || sizeType == "-GB")
+            {
+                fileSize /= 1024.0;
+                fileSize /= 1024.0;
+                fileSize /= 1024.0;
+            }
+            totalSize += fileSize;
+            printTable(filePrefix(ctr, argv[a]), fileSize);
+        }
+        ctr++;
+    } // Getting the parameters of function
+
+    printTable("Total", totalSize);
+}
+void ShowCommand(int argc, char *argv[])
+{
+
+    string path = "./";
+
+    std::cout << path;
 }
