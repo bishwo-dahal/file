@@ -1,4 +1,7 @@
-#  in c++
+# File.exe  in c++
+
+Simple command line tool for playing with files!
+As windows doesn't provide good tool So this will allow you to use file 
 
 ## file
   Place the file.exe to any place 
