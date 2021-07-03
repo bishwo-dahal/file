@@ -20,6 +20,9 @@ private:
     std::string MYSQL;
     std::string C;
     std::string H;
+    std::string MD;
+    std::string PYTHON;
+    std::string VUE;
 
 public:
     BoilerPlates();
@@ -100,6 +103,20 @@ BoilerPlates::BoilerPlates()
         "        margin:\n"
         "            0px:\n"
         "        }\n";
+    MD = "# This is title ";
+    PYTHON = "print(\"Hello World\")";
+    VUE = "<template>\n"
+          " Message is{{msg}}</ template>\n"
+          "      <script> export default\n"
+          "  {\n"
+          "  name:\n"
+          "      'HelloWorld',\n"
+          "          data(){\n"
+          "              return {\n"
+          "                  msg : 'Hello This is message',\n"
+          "              }}</ script>\n"
+          "          <style scoped>\n"
+          "          </ style> \n";
     plates.push_back(std::make_pair("html", HTML));
     plates.push_back(std::make_pair("css", CSS));
     plates.push_back(std::make_pair("js", JS));
@@ -107,6 +124,33 @@ BoilerPlates::BoilerPlates()
     plates.push_back(std::make_pair("cpp", CPP));
     plates.push_back(std::make_pair("c", C));
     plates.push_back(std::make_pair("h", H));
+    plates.push_back(std::make_pair("hpp", H));
+    plates.push_back(std::make_pair("hxx", H));
+    plates.push_back(std::make_pair("md", MD));
+    plates.push_back(std::make_pair("py", PYTHON));
+    plates.push_back(std::make_pair("vue", VUE));
 }
 
 #endif
+
+/*
+
+<template>
+Message is {{msg}}
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  data () {
+    return {
+      msg: 'Hello This is message',
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>
+
+*/

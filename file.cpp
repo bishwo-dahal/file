@@ -10,6 +10,8 @@
 #include "boilerplates.h"
 #include "functions.h"
 
+#define CURRENT_VERSION "0.0.1"
+
 using std::cin;
 using std::cout;
 using std::string;
@@ -92,6 +94,11 @@ int main(int argc, char *argv[])
         {
             ShowCommand(argc, argv);
         }
+        else if (Functions::compareCaseInsensitive(command, "-v") || Functions::compareCaseInsensitive(command, "--v"))
+        {
+            std::cout << CURRENT_VERSION << "\n This was compiled at: \n"
+                      << __TIMESTAMP__ << std::endl;
+        }
         else
         {
             std::cout.width(50);
@@ -139,7 +146,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    std::cout << "\n\t\tCOMPILED AT   " << __TIMESTAMP__ << std::endl;
+    std::cout << "\n\t\tCompleted AT:   " << Functions::getCurrentTime() << std::endl;
 
     return 0;
 }
@@ -163,13 +170,27 @@ void DeleteCommand(int argc, char *argv[])
 
 void CreateCommand(int argc, char *argv[])
 {
-
+    std::string createType = " ";
+    for (int a = 2; a < argc; a++)
+    {
+        std::string argument = argv[a];
+        if (Functions::compareCaseInsensitive(argument, "-b"))
+        {
+            createType = argument;
+            break;
+        }
+    }
     for (int a = 2; a < argc; a++)
     {
         if (std::ifstream(argv[a]))
         {
             std::cout.width(50);
             std::cout << filePrefix(a - 1, argv[a]) << " FILE IS ALREADY PRESENT" << std::endl;
+            continue;
+        }
+        std::string fileName = argv[a];
+        if (fileName == createType)
+        {
             continue;
         }
         std::ofstream openFile(argv[a]);
@@ -179,13 +200,19 @@ void CreateCommand(int argc, char *argv[])
         }
         else
         {
-            std::string fileName = argv[a];
-            std::string extensionName = getExtension(fileName);
 
-            openFile << getBoilerPlate(extensionName) << std::endl;
+            if (Functions::compareCaseInsensitive(createType, "-b"))
+            {
+                std::string extensionName = getExtension(fileName);
 
-            std::cout << filePrefix(a - 1, argv[a]) << "  created Successfully\n";
+                openFile << getBoilerPlate(extensionName) << std::endl;
+            }
+            else
+            {
+                openFile << Functions::getCurrentTime();
+            }
             openFile.close();
+            std::cout << filePrefix(a - 1, argv[a]) << "  created Successfully\n";
         }
     }
 }
@@ -322,7 +349,7 @@ void SizeCommand(int argc, char *argv[])
     for (int a = 2; a < argc; a++)
     {
         std::string argument = argv[a];
-        if (argument == "-b" || argument == "-B" || argument == "-mb" || argument == "-MB" || argument == "-kb" || argument == "-KB" || argument == "-gb" || argument == "-Gb")
+        if (argument == "-b" || argument == "-B" || argument == "-mb" || argument == "-MB" || argument == "-kb" || argument == "-KB" || argument == "-gb" || argument == "-GB")
         {
             sizeType = argument;
             break;
@@ -347,16 +374,16 @@ void SizeCommand(int argc, char *argv[])
             findSize.seekg(0, std::ios_base::end);
             double fileSize = findSize.tellg();
 
-            if (sizeType == "-kb" || sizeType == "-KB")
+            if (Functions::compareCaseInsensitive(sizeType, "-kb"))
             {
                 fileSize /= 1024.0;
             }
-            else if (sizeType == "-mb" || sizeType == "-MB")
+            else if (Functions::compareCaseInsensitive(sizeType, "-mb"))
             {
                 fileSize /= 1024.0;
                 fileSize /= 1024.0;
             }
-            else if (sizeType == "-gb" || sizeType == "-GB")
+            else if (Functions::compareCaseInsensitive(sizeType, "-gb"))
             {
                 fileSize /= 1024.0;
                 fileSize /= 1024.0;
