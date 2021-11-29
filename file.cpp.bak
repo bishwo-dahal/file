@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 		}else
         {
             std::cout.width(50);
-            std::cout << "\t\tUse --help command to get help \n COMMAND NOT FOUND OR LESS APPROPRIATE COMMANDS \n\n"
+            std::cout << "\t\tUse --help command to get help \nCOMMAND NOT FOUND OR LESS APPROPRIATE COMMANDS \n\n"
                       << std::endl;
         }
     }
