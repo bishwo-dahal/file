@@ -60,13 +60,13 @@ This will create file in the current directory.  You can create as many files as
 
 ### Arguments:
 
- `-b` : In bytes
+ `-b` : In Bytes
 
- `-kb` : In Kilo bytes
+ `-kb` : In Kilo Bytes
 
- `-mb` : In mega bytes
+ `-mb` : In Mega Bytes
 
- `-gb` : In Giga bytes
+ `-gb` : In Giga Bytes
 
 
 ```powershell
