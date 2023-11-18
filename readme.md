@@ -16,7 +16,19 @@ As windows doesn't provide good tool So this will allow you to use file
   This will return you the version of file
 
   ---
-## Commands 
+
+## Commands Summary
+
+Commands | Description
+---      | --- |
+file create | Create file |
+file open | Open file |
+file size | Display size of file |
+file insert | Insert content into file |
+file rename | Rename the file |
+file delete | Delete the file |
+
+## Commands with Description
 
 ### `file create *.*`
 
